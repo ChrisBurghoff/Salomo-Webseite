@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gewalt in der Sprache online – Info für Kinder</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+      background: linear-gradient(145deg, #f9f3e6 0%, #e6f0fa 100%);
+      min-height: 100vh;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .container {
+      max-width: 1000px;
+      width: 100%;
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(6px);
+      border-radius: 48px 48px 32px 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.05);
+      padding: 2rem 2rem 1.5rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #1e3c5c;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    h1 small {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #4a6f8f;
+      margin-left: 0.5rem;
+    }
+
+    .progress-nav {
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+      margin: 0.75rem 0 1.5rem;
+      gap: 0;
+    }
+    .progress-nav.visible { display: flex; }
+    .progress-step-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .progress-dot {
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 50%;
+      background: #d9e8f5;
+      border: 3px solid #b6cfe5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #4a6f8f;
+      transition: all 0.3s;
+    }
+    .progress-dot.active {
+      background: #f7b731;
+      border-color: #c58f2a;
+      color: #1a2f44;
+      box-shadow: 0 4px 14px rgba(247,183,49,0.45);
+      transform: scale(1.18);
+    }
+    .progress-dot.done {
+      background: #4caf50;
+      border-color: #2e7d32;
+      color: white;
+    }
+    .progress-line {
+      width: 2.8rem;
+      height: 3px;
+      background: #d9e8f5;
+      margin-bottom: 1.35rem;
+      transition: background 0.3s;
+      border-radius: 2px;
+    }
+    .progress-line.done { background: #4caf50; }
+    .progress-label {
+      font-size: 0.65rem;
+      color: #4a6f8f;
+      font-weight: 600;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+    .progress-dot.active + .progress-label { color: #c58f2a; }
+
+    .page { display: none; animation: fadeIn 0.25s ease; padding: 0.5rem 0 1rem; }
+    .page.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page h2 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #1a2f44;
+      margin-bottom: 0.5rem;
+      border-left: 6px solid #f7b731;
+      padding-left: 1rem;
+    }
+
+    .page p {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: #1f3a4b;
+      background: rgba(255,255,255,0.6);
+      padding: 1rem 1.5rem;
+      border-radius: 24px;
+      margin: 0.75rem 0 1rem;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .start-intro { text-align: center; padding: 0.5rem 0; }
+    .start-intro .title-image {
+      width: 100%; max-width: 700px; border-radius: 32px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.10);
+      margin: 1rem auto; display: block; background: #eef3f8;
+    }
+    .start-intro .claim { font-size: 1.6rem; font-weight: 700; color: #1a2f44; margin: 0.75rem 0 0.25rem; }
+    .start-intro .sub {
+      font-size: 1.2rem; color: #3f5f7a; background: rgba(255,255,255,0.7);
+      display: inline-block; padding: 0.2rem 2rem; border-radius: 60px; margin-top: 0.25rem;
+    }
+    .start-intro p { background: transparent; box-shadow: none; padding: 0.5rem 0; margin: 0.5rem 0; }
+
+    .start-btn {
+      display: inline-block; margin-top: 1.5rem; padding: 0.8rem 2.8rem;
+      font-size: 1.4rem; font-weight: 700; border: none; border-radius: 60px;
+      background: #f7b731; color: #1a2f44;
+      box-shadow: 0 8px 0 #c58f2a, 0 8px 24px rgba(247,183,49,0.3);
+      cursor: pointer; transition: all 0.1s;
+    }
+    .start-btn:hover { background: #fbc85a; }
+    .start-btn:active { transform: translateY(6px); box-shadow: 0 2px 0 #c58f2a, 0 8px 20px rgba(247,183,49,0.25); }
+
+    .task {
+      background: white; border-radius: 32px; padding: 1.5rem 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04); margin: 1.25rem 0;
+    }
+    .task-title { font-size: 1.25rem; font-weight: 600; color: #1f3a4b; margin-bottom: 1rem; }
+    .option-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .option-item {
+      display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem;
+      background: #f6faff; border-radius: 60px; border: 2px solid transparent;
+      transition: all 0.2s; font-size: 1.1rem; cursor: pointer;
+    }
+    .option-item:hover { background: #e9f0fa; }
+    .option-item input[type="checkbox"] {
+      width: 1.3rem; height: 1.3rem; accent-color: #1e3c5c; cursor: pointer; flex-shrink: 0;
+    }
+    .option-item label { cursor: pointer; flex: 1; }
+
+    .lueckentext {
+      font-size: 1.15rem; line-height: 2.4; background: #fafcff;
+      padding: 1.5rem; border-radius: 28px; border: 2px dashed #b6cfe5;
+    }
+    .lueckentext select {
+      font-size: 1rem; padding: 0.3rem 0.6rem; border-radius: 40px;
+      border: 2px solid #8eb3d0; background: white; font-weight: 600;
+      color: #1e3c5c; cursor: pointer; outline: none; transition: 0.15s; min-width: 110px;
+    }
+    .lueckentext select:focus { border-color: #f7b731; box-shadow: 0 0 0 3px rgba(247,183,49,0.25); }
+    .luecke { display: inline-block; margin: 0 0.1rem; }
+
+    .check-btn {
+      display: inline-block; margin-top: 1.5rem; padding: 0.8rem 2.5rem;
+      font-size: 1.25rem; font-weight: 700; border: none; border-radius: 60px;
+      background: #f7b731; color: #1a2f44;
+      box-shadow: 0 8px 0 #c58f2a, 0 8px 24px rgba(247,183,49,0.3);
+      cursor: pointer; transition: all 0.08s linear; letter-spacing: 0.02em;
+    }
+    .check-btn:active { transform: translateY(6px); box-shadow: 0 2px 0 #c58f2a, 0 8px 20px rgba(247,183,49,0.25); }
+    .check-btn:hover { background: #fbc85a; }
+
+    .correct   { background: #b8e6b8 !important; border-color: #2b7a2b !important; }
+    .incorrect { background: #fccccc !important; border-color: #b33c3c !important; }
+    .luecke.correct select   { background: #b8e6b8; border-color: #2b7a2b; }
+    .luecke.incorrect select { background: #fccccc; border-color: #b33c3c; }
+
+    .auto-next-notice {
+      text-align: center; margin-top: 0.8rem; font-size: 0.95rem;
+      color: #2b7a2b; font-weight: 600; animation: fadeIn 0.3s ease;
+      display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+    }
+    .auto-next-notice .arrow { display: inline-block; animation: bounceRight 0.6s infinite alternate; }
+    @keyframes bounceRight { from { transform: translateX(0); } to { transform: translateX(6px); } }
+
+    .wusstest-du {
+      background: linear-gradient(135deg, #fff8e1, #fef3c7);
+      border-left: 5px solid #f7b731;
+      border-radius: 20px;
+      padding: 0.9rem 1.4rem;
+      margin: 0.5rem 0 1rem;
+      font-size: 1.05rem;
+      color: #5a3d00;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .wusstest-du .wd-icon { font-size: 1.7rem; flex-shrink: 0; margin-top: -0.05rem; }
+    .wusstest-du div strong {
+      display: block;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #b07a00;
+      margin-bottom: 0.2rem;
+    }
+
+    .merke-dir {
+      background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+      border-left: 5px solid #4caf50;
+      border-radius: 20px;
+      padding: 1rem 1.4rem;
+      margin: 0.5rem 0 1rem;
+      font-size: 1.02rem;
+      color: #1b4d20;
+    }
+    .merke-dir strong {
+      display: block;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #2e7d32;
+      margin-bottom: 0.5rem;
+    }
+    .merke-dir ul { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+    .merke-dir ul li { display: flex; gap: 0.5rem; line-height: 1.45; }
+    .merke-dir ul li::before { content: "✓"; color: #2e7d32; font-weight: 700; flex-shrink: 0; }
+
+    .hilfe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0 1.5rem;
+    }
+    .hilfe-card {
+      background: white;
+      border-radius: 24px;
+      padding: 1.2rem 1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      text-align: center;
+      border-top: 4px solid #f7b731;
+    }
+    .hilfe-card .hc-icon { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
+    .hilfe-card .hc-title { font-weight: 700; color: #1e3c5c; font-size: 1rem; margin-bottom: 0.3rem; }
+    .hilfe-card .hc-detail { font-size: 0.88rem; color: #4a6f8f; line-height: 1.45; }
+    .hilfe-card .hc-number { font-size: 1.25rem; font-weight: 700; color: #1e3c5c; margin-top: 0.35rem; display: block; }
+
+    .end-page { text-align: center; }
+    .end-page .end-image {
+      max-width: 600px; width: 100%; border-radius: 36px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12); margin: 1.5rem 0;
+    }
+    .end-page .back-btn {
+      display: inline-block; margin-top: 1rem; padding: 0.8rem 2.5rem;
+      font-size: 1.2rem; font-weight: 700; border: none; border-radius: 60px;
+      background: #1e3c5c; color: white;
+      box-shadow: 0 8px 0 #142c42, 0 8px 20px rgba(30,60,92,0.25);
+      cursor: pointer; transition: all 0.1s;
+    }
+    .end-page .back-btn:active { transform: translateY(6px); box-shadow: 0 2px 0 #142c42, 0 8px 20px rgba(30,60,92,0.2); }
+
+    .end-checklist {
+      background: white;
+      border-radius: 24px;
+      padding: 1.2rem 1.5rem;
+      margin: 1rem auto 0.5rem;
+      max-width: 540px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+      text-align: left;
+    }
+    .end-checklist h3 {
+      color: #1e3c5c;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.4rem 0;
+      font-size: 1rem;
+      color: #1f3a4b;
+      border-bottom: 1px solid #eef3f8;
+      line-height: 1.4;
+    }
+    .checklist-item:last-child { border-bottom: none; }
+    .check-mark { color: #4caf50; font-weight: 700; font-size: 1.15rem; flex-shrink: 0; margin-top: 0.05rem; }
+
+    @media (max-width: 640px) {
+      .container { padding: 1rem; }
+      h1 { font-size: 1.8rem; flex-wrap: wrap; }
+      .page h2 { font-size: 1.5rem; }
+      .task { padding: 1rem; }
+      .option-item { font-size: 1rem; padding: 0.4rem 0.8rem; }
+      .lueckentext { font-size: 1rem; padding: 1rem; }
+      .lueckentext select { min-width: 80px; font-size: 0.9rem; }
+      .start-intro .claim { font-size: 1.3rem; }
+      .start-intro .sub { font-size: 1rem; padding: 0.1rem 1rem; }
+      .end-page .end-image { max-width: 100%; }
+      .progress-line { width: 1.6rem; }
+      .progress-label { font-size: 0.58rem; }
+    }
+
+    .mt-2 { margin-top: 0.5rem; }
+    .text-center { text-align: center; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>
+      <span>Gewalt in der Sprache online</span>
+      <small>– für Kinder der 5./6. Klasse</small>
+    </h1>
+  </header>
+
+  <nav class="progress-nav" id="progressNav" aria-label="Fortschritt">
+    <div class="progress-step-wrap">
+      <div class="progress-dot" id="pd1">1</div>
+      <span class="progress-label">Was?</span>
+    </div>
+    <div class="progress-line" id="pl1"></div>
+    <div class="progress-step-wrap">
+      <div class="progress-dot" id="pd2">2</div>
+      <span class="progress-label">Warum?</span>
+    </div>
+    <div class="progress-line" id="pl2"></div>
+    <div class="progress-step-wrap">
+      <div class="progress-dot" id="pd3">3</div>
+      <span class="progress-label">Reagieren</span>
+    </div>
+    <div class="progress-line" id="pl3"></div>
+    <div class="progress-step-wrap">
+      <div class="progress-dot" id="pd4">4</div>
+      <span class="progress-label">Unterbinden</span>
+    </div>
+    <div class="progress-line" id="pl4"></div>
+    <div class="progress-step-wrap">
+      <div class="progress-dot" id="pd5">5</div>
+      <span class="progress-label">Hilfe</span>
+    </div>
+  </nav>
+
+  <div id="page0" class="page active">
+    <div class="start-intro">
+      <h2>Herzlich willkommen</h2>
+      <p class="claim">Hier lernst du alles rund um Gewalt in der Sprache online</p>
+      <p class="sub">ein kurzer Exkurs für Schüler der 5. und 6. Klasse</p>
+      <img src="Bilder/Titelbild.jpg" alt="Zwei Handys: rechts eine wütende Menschenmasse, links ein ängstliches Kind" class="title-image" />
+      <p style="margin-top: 1rem; font-size: 1.1rem; background: #eef3f8; padding: 0.8rem 1.5rem; border-radius: 60px;">
+        Mit den folgenden Seiten erfährst du, was sprachliche Gewalt ist, warum sie schadet,
+        wie du dich verhalten kannst und wie du selbst dazu beitragen kannst, dass Sprache
+        respektvoller wird.
+      </p>
+      <p style="font-size: 1rem; color: #3f5f7a; margin-top: 0.2rem;">
+        Klicke auf den Button, um loszulegen.
+      </p>
+      <button id="startJourneyBtn" class="start-btn">Los geht's!</button>
+    </div>
+  </div>
+
+  <div id="page1" class="page">
+    <h2>Was ist Gewalt in der Sprache?</h2>
+    <p>
+      <strong>Sprachliche Gewalt</strong> umfasst Äußerungen, die andere Menschen verletzen,
+      einschüchtern, herabwürdigen oder bedrohen. Sie kann sowohl verbal als auch digital
+      auftreten und schadet vielen Menschen. Dabei kann diese sprachliche Gewalt sowohl
+      direkt als auch indirekt verwendet werden.
+    </p>
+
+    <div class="wusstest-du">
+      <div class="wd-icon">💡</div>
+      <div>
+        <strong>Wusstest du?</strong>
+        Laut einer Studie der DAK-Gesundheit wurde jedes dritte Kind in Deutschland zwischen
+        10 und 18 Jahren bereits mindestens einmal im Internet beleidigt oder gemobbt.
+        Sprachliche Gewalt ist also ein weit verbreitetes Problem – du bist damit nicht allein.
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-title">Welche der folgenden Kommentare enthalten sprachliche Gewalt? Kreuze sie an!</div>
+      <div class="option-list" id="page1Options">
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p1c1"><label for="p1c1">„Du bist doof!"</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="false" id="p1c2"><label for="p1c2">„Das war heute keine gute Idee."</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p1c3"><label for="p1c3">„Kein Wunder, dass niemand mit dir spielen will."</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="false" id="p1c4"><label for="p1c4">„Kannst du bitte etwas leiser sein?"</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p1c5"><label for="p1c5">„Du bist echt peinlich."</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="false" id="p1c6"><label for="p1c6">„Ich sehe das anders als du."</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p1c7"><label for="p1c7">„Mit dir kann man sowieso nichts anfangen."</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="false" id="p1c8"><label for="p1c8">„Danke für deine Hilfe."</label></div>
+      </div>
+      <button class="check-btn" data-target="page1">Antwort prüfen</button>
+    </div>
+
+    <div class="merke-dir">
+      <strong>✏️ Merke dir!</strong>
+      <ul>
+        <li>Sprachliche Gewalt verletzt – ob direkt im Gespräch oder digital über Chats und soziale Medien.</li>
+        <li>Beleidigungen, Drohungen, Ausgrenzung und Lästern sind alles Formen sprachlicher Gewalt.</li>
+        <li>Auch ein einziger Kommentar kann eine Person tief treffen – Absicht spielt dabei keine Rolle.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="page2" class="page">
+    <h2>Warum ist sprachliche Gewalt schädlich?</h2>
+    <p>
+      Sprachliche Gewalt kann viele Folgen für die Opfer haben. Zum Beispiel kann sie das
+      Selbstwertgefühl einer Person einschränken und Gefühle wie Angst, Stress oder
+      Unsicherheit auslösen. Auch bei eigentlich sachlichen Diskussionen können provokative
+      Bemerkungen schnell Konflikte verursachen oder verstärken.
+    </p>
+
+    <div class="wusstest-du">
+      <div class="wd-icon">🧠</div>
+      <div>
+        <strong>Wusstest du?</strong>
+        Wissenschaftler haben herausgefunden, dass verletzende Worte dieselben Regionen im
+        Gehirn aktivieren können wie körperlicher Schmerz. Worte können also buchstäblich
+        wehtun – nicht nur im übertragenen Sinne!
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-title">Welche der folgenden Aussagen sind <strong>Folgen</strong> von sprachlicher Gewalt? Kreuze sie an!</div>
+      <div class="option-list" id="page2Options">
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p2c1"><label for="p2c1">Das Selbstwertgefühl kann sinken.</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="false" id="p2c2"><label for="p2c2">Man bekommt automatisch bessere Noten.</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p2c3"><label for="p2c3">Man kann Angst vor der Schule bekommen.</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p2c4"><label for="p2c4">Freundschaften können kaputtgehen.</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="false" id="p2c5"><label for="p2c5">Man wird automatisch beliebter.</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p2c6"><label for="p2c6">Stress und Unsicherheit können entstehen.</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="false" id="p2c7"><label for="p2c7">Man lernt automatisch schneller.</label></div>
+      </div>
+      <button class="check-btn" data-target="page2">Antwort prüfen</button>
+    </div>
+
+    <div class="merke-dir">
+      <strong>✏️ Merke dir!</strong>
+      <ul>
+        <li>Sprachliche Gewalt kann das Selbstwertgefühl dauerhaft beschädigen – auch wenn der Täter es „nicht so gemeint" hat.</li>
+        <li>Betroffene entwickeln häufig Angst, Stress und ziehen sich aus sozialen Gruppen zurück.</li>
+        <li>Auch Schulleistungen, Schlaf und das allgemeine Wohlbefinden können darunter leiden.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="page3" class="page">
+    <h2>Wie reagiert man auf sprachliche Gewalt?</h2>
+    <p>
+      Man sollte, wenn man mit sprachlicher Gewalt konfrontiert wird, zunächst Ruhe bewahren
+      und versuchen, sich nicht provozieren zu lassen. Wenn die Person aus eigener Sicht eine
+      Grenze überschreitet, sollte man diese deutlich machen. Falls die Person trotzdem
+      weitermacht, sollte man das Gespräch umgehend beenden. Es ist wichtig, dass man auf
+      Gewalt nicht mit noch mehr Gewalt reagiert. Wenn man die Person zum Beispiel
+      zurückbeleidigt, eskaliert das die Situation nur und sorgt für mehr Konflikte.
+      Handelt es sich bei der sprachlichen Gewalt um aktives Mobbing, dem man nicht direkt
+      entkommen kann, dann ist es wichtig, dass man sich Unterstützung von anderen sucht
+      und dieses Verhalten meldet.
+    </p>
+
+    <div class="task">
+      <div class="task-title">Stell dir vor, jemand schreibt in der Klassengruppe: <em>„Du bist voll peinlich. Niemand mag dich."</em><br>Welche Reaktionen sind gut? Kreuze sie an!</div>
+      <div class="option-list" id="page3Options">
+        <div class="option-item"><input type="checkbox" data-correct="false" id="p3c1"><label for="p3c1">Ich schreibe eine noch gemeinere Nachricht zurück.</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p3c2"><label for="p3c2">Ich mache einen Screenshot und hole Hilfe.</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p3c3"><label for="p3c3">Ich melde die Nachricht einer Lehrkraft oder meinen Eltern.</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="false" id="p3c4"><label for="p3c4">Ich leite die Nachricht an andere weiter.</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p3c5"><label for="p3c5">Ich sage ruhig, dass der Kommentar verletzend ist.</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="false" id="p3c6"><label for="p3c6">Ich lache mit den anderen mit.</label></div>
+      </div>
+      <button class="check-btn" data-target="page3">Antwort prüfen</button>
+    </div>
+
+    <div class="merke-dir">
+      <strong>✏️ Merke dir!</strong>
+      <ul>
+        <li>Ruhig bleiben und nicht zurückbeleidigen – das macht die Situation nur schlimmer.</li>
+        <li>Screenshot machen: Beweise sichern, bevor Nachrichten gelöscht werden.</li>
+        <li>Hilfe holen ist kein Verrat – es ist mutig und richtig!</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="page4" class="page">
+    <h2>Wie kann man Gewalt in der Sprache unterbinden?</h2>
+    <p style="background: transparent; box-shadow: none; padding: 0 0 0.5rem 0;">
+      Vervollständige den Lückentext, indem du die passenden Wörter aus den Blöcken auswählst.
+    </p>
+    <div class="task">
+      <div class="lueckentext" id="lueckentextContainer">
+        Wenn jemand online beleidigt wird, sollte man zunächst ruhig bleiben
+        und sich nicht
+        <span class="luecke" data-correct="provozieren">
+          <select>
+            <option value="">— wähle —</option>
+            <option value="ignorieren">ignorieren</option>
+            <option value="provozieren">provozieren</option>
+            <option value="beleidigen">beleidigen</option>
+            <option value="unterstützen">unterstützen</option>
+            <option value="melden">melden</option>
+            <option value="sachlich">sachlich</option>
+          </select>
+        </span>
+        lassen.
+
+        Wer sprachliche Gewalt beobachtet, kann die betroffene Person
+        <span class="luecke" data-correct="unterstützen">
+          <select>
+            <option value="">— wähle —</option>
+            <option value="ignorieren">ignorieren</option>
+            <option value="provozieren">provozieren</option>
+            <option value="beleidigen">beleidigen</option>
+            <option value="unterstützen">unterstützen</option>
+            <option value="melden">melden</option>
+            <option value="sachlich">sachlich</option>
+          </select>
+        </span>
+        und zeigen, dass sie nicht allein ist.
+
+        Schwere Beleidigungen oder Mobbing sollte man einer Vertrauensperson
+        <span class="luecke" data-correct="melden">
+          <select>
+            <option value="">— wähle —</option>
+            <option value="ignorieren">ignorieren</option>
+            <option value="provozieren">provozieren</option>
+            <option value="beleidigen">beleidigen</option>
+            <option value="unterstützen">unterstützen</option>
+            <option value="melden">melden</option>
+            <option value="sachlich">sachlich</option>
+          </select>
+        </span>.
+
+        Bei Streitigkeiten ist es wichtig,
+        <span class="luecke" data-correct="sachlich">
+          <select>
+            <option value="">— wähle —</option>
+            <option value="ignorieren">ignorieren</option>
+            <option value="provozieren">provozieren</option>
+            <option value="beleidigen">beleidigen</option>
+            <option value="unterstützen">unterstützen</option>
+            <option value="melden">melden</option>
+            <option value="sachlich">sachlich</option>
+          </select>
+        </span>
+        zu bleiben und andere nicht zu
+        <span class="luecke" data-correct="beleidigen">
+          <select>
+            <option value="">— wähle —</option>
+            <option value="ignorieren">ignorieren</option>
+            <option value="provozieren">provozieren</option>
+            <option value="beleidigen">beleidigen</option>
+            <option value="unterstützen">unterstützen</option>
+            <option value="melden">melden</option>
+            <option value="sachlich">sachlich</option>
+          </select>
+        </span>.
+      </div>
+      <div style="margin-top: 1.2rem; display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center;">
+        <span style="background: white; padding: 0.3rem 1rem; border-radius: 40px; border: 2px solid #8eb3d0;">provozieren</span>
+        <span style="background: white; padding: 0.3rem 1rem; border-radius: 40px; border: 2px solid #8eb3d0;">unterstützen</span>
+        <span style="background: white; padding: 0.3rem 1rem; border-radius: 40px; border: 2px solid #8eb3d0;">melden</span>
+        <span style="background: white; padding: 0.3rem 1rem; border-radius: 40px; border: 2px solid #8eb3d0;">ignorieren</span>
+        <span style="background: white; padding: 0.3rem 1rem; border-radius: 40px; border: 2px solid #8eb3d0;">sachlich</span>
+        <span style="background: white; padding: 0.3rem 1rem; border-radius: 40px; border: 2px solid #8eb3d0;">beleidigen</span>
+      </div>
+      <button class="check-btn" data-target="page4" style="margin-top: 1.8rem;">Antwort prüfen</button>
+    </div>
+  </div>
+
+  <div id="page5" class="page">
+    <h2>Wo bekomme ich Hilfe?</h2>
+    <p>
+      Du musst nicht alleine mit sprachlicher Gewalt oder Mobbing umgehen. Es gibt viele
+      Menschen und Anlaufstellen, die dir helfen können – kostenlos und vertraulich.
+      Wichtig: Hilfe zu suchen ist kein Zeichen von Schwäche, sondern von Stärke!
+    </p>
+
+    <div class="hilfe-grid">
+      <div class="hilfe-card">
+        <span class="hc-icon">📞</span>
+        <div class="hc-title">Nummer gegen Kummer</div>
+        <div class="hc-detail">Kostenlose Telefonberatung für Kinder und Jugendliche, anonym und vertraulich.</div>
+        <span class="hc-number">116 111</span>
+        <div class="hc-detail" style="margin-top:0.3rem;">Mo–Sa, 14–20 Uhr</div>
+      </div>
+      <div class="hilfe-card">
+        <span class="hc-icon">🏫</span>
+        <div class="hc-title">Schule</div>
+        <div class="hc-detail">Deine Vertrauenslehrkraft oder der Schulsozialpädagoge helfen dir direkt vor Ort.</div>
+      </div>
+      <div class="hilfe-card">
+        <span class="hc-icon">🏠</span>
+        <div class="hc-title">Familie &amp; Freunde</div>
+        <div class="hc-detail">Eltern, Geschwister oder enge Freunde sind oft die ersten und wichtigsten Ansprechpersonen.</div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-title">Wem kannst du dich anvertrauen, wenn du von sprachlicher Gewalt betroffen bist? Kreuze alle richtigen Antworten an!</div>
+      <div class="option-list" id="page5Options">
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p5c1"><label for="p5c1">Eltern oder Erziehungsberechtigte</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p5c2"><label for="p5c2">Die Vertrauenslehrkraft in der Schule</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="false" id="p5c3"><label for="p5c3">Den Täter oder die Täterin um Erlaubnis fragen</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p5c4"><label for="p5c4">Den Schulsozialpädagogen</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p5c5"><label for="p5c5">Nummer gegen Kummer: 116 111 (kostenlos und anonym)</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="false" id="p5c6"><label for="p5c6">Die Beleidigungen einfach an alle weiterleiten</label></div>
+        <div class="option-item"><input type="checkbox" data-correct="true"  id="p5c7"><label for="p5c7">Enge Freunde oder ältere Geschwister</label></div>
+      </div>
+      <button class="check-btn" data-target="page5" style="margin-top: 1.8rem;">Antwort prüfen</button>
+    </div>
+  </div>
+
+  <div id="page6" class="page">
+    <div class="end-page">
+      <h2>Glückwunsch!</h2>
+      <p>
+        Du hast alle Aufgaben erfolgreich gemeistert und weißt jetzt bestens Bescheid über
+        sprachliche Gewalt. Bleib fair und respektvoll – du kannst viel bewirken!
+      </p>
+      <img src="Bilder/EndBild.jpg" alt="Antimobbingstopschild" class="end-image" />
+
+      <div class="end-checklist">
+        <h3>🌟 So bin ich fair online – meine Checkliste</h3>
+        <div class="checklist-item"><span class="check-mark">✓</span> Ich schreibe im Internet nur, was ich der Person auch ins Gesicht sagen würde.</div>
+        <div class="checklist-item"><span class="check-mark">✓</span> Wenn jemand online gemobbt wird, greife ich ein oder hole Hilfe.</div>
+        <div class="checklist-item"><span class="check-mark">✓</span> Ich mache einen Screenshot, bevor Nachrichten gelöscht werden.</div>
+        <div class="checklist-item"><span class="check-mark">✓</span> Ich wende mich an eine Vertrauensperson..</div>
+        <div class="checklist-item"><span class="check-mark">✓</span> Ich lache nicht mit, wenn jemand ausgelacht oder beleidigt wird.</div>
+        <div class="checklist-item"><span class="check-mark">✓</span> Ich denke nach, bevor ich etwas schreibe – Worte bleiben im Netz!</div>
+      </div>
+
+      <div>
+        <button id="backToStartBtn" class="back-btn">Zurück zur Startseite</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 2rem; text-align: center; color: #4a6f8f; font-size: 0.9rem; border-top: 2px solid rgba(30,60,92,0.08); padding-top: 1rem;">
+    Jeder kann helfen, dass Sprache freundlicher wird – auch du!
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const pages = {
+    page0: document.getElementById('page0'),
+    page1: document.getElementById('page1'),
+    page2: document.getElementById('page2'),
+    page3: document.getElementById('page3'),
+    page4: document.getElementById('page4'),
+    page5: document.getElementById('page5'),
+    page6: document.getElementById('page6')
+  };
+
+  const progressNav = document.getElementById('progressNav');
+  const progressDots  = [1,2,3,4,5].map(i => document.getElementById('pd' + i));
+  const progressLines = [1,2,3,4].map(i => document.getElementById('pl' + i));
+  const taskPageOrder = ['page1','page2','page3','page4','page5'];
+
+  function updateProgressBar(pageId) {
+    const idx = taskPageOrder.indexOf(pageId);
+    if (idx === -1) {
+      progressNav.classList.remove('visible');
+      return;
+    }
+    progressNav.classList.add('visible');
+    progressDots.forEach((dot, i) => {
+      dot.classList.remove('active', 'done');
+      if (i < idx)       dot.classList.add('done');
+      else if (i === idx) dot.classList.add('active');
+    });
+    progressLines.forEach((line, i) => {
+      line.classList.remove('done');
+      if (i < idx) line.classList.add('done');
+    });
+  }
+
+  function removeAutoNextNotices() {
+    document.querySelectorAll('.auto-next-notice').forEach(el => el.remove());
+  }
+
+  function setActivePage(pageId) {
+    Object.values(pages).forEach(p => p.classList.remove('active'));
+    if (pages[pageId]) pages[pageId].classList.add('active');
+    clearAllFeedback();
+    removeAutoNextNotices();
+    updateProgressBar(pageId);
+
+    document.querySelectorAll('.check-btn').forEach(btn => {
+      btn.textContent = 'Antwort prüfen';
+      btn.style.background = '#f7b731';
+      btn.style.color = '#1a2f44';
+      btn.style.boxShadow = '0 8px 0 #c58f2a, 0 8px 24px rgba(247,183,49,0.3)';
+    });
+  }
+
+  function clearAllFeedback() {
+    document.querySelectorAll('.option-item').forEach(el => {
+      el.classList.remove('correct','incorrect');
+    });
+    document.querySelectorAll('.luecke').forEach(el => {
+      el.classList.remove('correct','incorrect');
+    });
+  }
+
+  function checkCheckboxPage(optionsId) {
+    const items = document.querySelectorAll('#' + optionsId + ' .option-item');
+    let allCorrect = true;
+    items.forEach(item => {
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      const isCorrect = checkbox.dataset.correct === 'true';
+      const isChecked  = checkbox.checked;
+      item.classList.remove('correct','incorrect');
+      if (isChecked === isCorrect) { item.classList.add('correct'); }
+      else { item.classList.add('incorrect'); allCorrect = false; }
+    });
+    return allCorrect;
+  }
+
+  function checkPage4() {
+    const luecken = document.querySelectorAll('.luecke');
+    let allCorrect = true;
+    luecken.forEach(luecke => {
+      const select  = luecke.querySelector('select');
+      const correct = luecke.dataset.correct;
+      luecke.classList.remove('correct','incorrect');
+      if (select.value === correct) { luecke.classList.add('correct'); }
+      else { luecke.classList.add('incorrect'); allCorrect = false; }
+    });
+    return allCorrect;
+  }
+
+  const nextPageMap = {
+    'page1': 'page2',
+    'page2': 'page3',
+    'page3': 'page4',
+    'page4': 'page5',
+    'page5': 'page6'
+  };
+
+  document.querySelectorAll('.check-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const target = this.dataset.target;
+      let result = false;
+      switch (target) {
+        case 'page1': result = checkCheckboxPage('page1Options'); break;
+        case 'page2': result = checkCheckboxPage('page2Options'); break;
+        case 'page3': result = checkCheckboxPage('page3Options'); break;
+        case 'page4': result = checkPage4(); break;
+        case 'page5': result = checkCheckboxPage('page5Options'); break;
+        default: break;
+      }
+
+      removeAutoNextNotices();
+
+      if (result) {
+        this.textContent = '✓ Alles richtig!';
+        this.style.background = '#4caf50';
+        this.style.color = 'white';
+        this.style.boxShadow = '0 8px 0 #2e7d32, 0 8px 24px rgba(76,175,80,0.4)';
+
+        const nextPage = nextPageMap[target];
+        if (nextPage) {
+          const notice = document.createElement('div');
+          notice.className = 'auto-next-notice';
+          notice.innerHTML = 'Super! Wir springen gleich weiter <span class="arrow">→</span>';
+          this.parentNode.appendChild(notice);
+          setTimeout(() => setActivePage(nextPage), 2000);
+        }
+      } else {
+        this.textContent = 'Nicht ganz – schau dir die Markierungen an.';
+        setTimeout(() => { this.textContent = 'Antwort prüfen'; }, 2500);
+      }
+    });
+  });
+
+  document.getElementById('startJourneyBtn').addEventListener('click', function() {
+    setActivePage('page1');
+  });
+
+  document.getElementById('backToStartBtn').addEventListener('click', function() {
+    setActivePage('page0');
+  });
+
+  setActivePage('page0');
+})();
+</script>
+
+</body>
+</html>
